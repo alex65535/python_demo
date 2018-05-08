@@ -1,8 +1,13 @@
 # 复制源目录文件到目标目录
-import shutil, os
+import shutil
+import os
 
+源文件目录路径 = "E:\\b"
+目标目录路径 = "G:\\Photos"
+'''
 源文件目录路径 = "E:\\a"
 目标目录路径 = "E:\\bb"
+'''
 
 if 源文件目录路径[-1] != "\\":
     源文件目录路径 = 源文件目录路径 + "\\"
@@ -28,8 +33,10 @@ for find_obj in os.walk(源文件目录路径):
         当前文件路径 = 当前目录路径 + filename
         当前文件目标文件路径 = 目标目录路径 + 当前源文件的相对目录路径 + filename
         print("正在处理的文件" + str(正在处理的文件)+"/" + str(文件总数) + "："+当前文件路径)
-        print(当前文件路径, 当前文件目标文件路径)
+        #print(当前文件路径, 当前文件目标文件路径)
         if not os.path.exists(目标目录路径 + 当前源文件的相对目录路径):
             os.makedirs(目标目录路径 + 当前源文件的相对目录路径)
         if not os.path.exists(当前文件目标文件路径):
             shutil.copy(当前文件路径, 当前文件目标文件路径)
+        else:
+            print("已存在")
