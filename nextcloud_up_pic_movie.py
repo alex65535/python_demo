@@ -12,10 +12,18 @@ from hachoir import parser
 #from hachoir import stream
 #from hachoir import subfile
 
-照片视频文件目录路径 = 'Z:\\家庭照片视频\\手机备份\\simon手机备份 2015-5-10\\DCIM\\Camera\\'
-照片视频文件目录路径 = "e:\\a\\"
+照片视频文件目录路径 = 'Z:\\[备份]钱锋的 iPhone'
+#照片视频文件目录路径 = "e:\\a\\"
 #照片视频文件目录路径 = "C:\\Camera\\"
 目标目录路径 = "e:\\b\\"
+
+if 照片视频文件目录路径[-1] != "\\":
+    照片视频文件目录路径 = 照片视频文件目录路径 + "\\"
+
+if 目标目录路径[-1] != "\\":
+    目标目录路径 = 目标目录路径 + "\\"
+
+
 已经复制的文件路径列表 = []
 已复制文件列表文件路径 = 照片视频文件目录路径 + "copyed.txt"
 记录未找出创建时间的文件路径 = 照片视频文件目录路径 + "untime.txt"
@@ -116,7 +124,7 @@ def 找出所有图片视频和拍摄信息():
             当前目录路径 = 当前目录路径 + "\\"
         for filename in find_obj[2]:
             正在处理的文件 = 正在处理的文件 + 1
-            print("正在处理的文件" + str(正在处理的文件)+"/" + str(文件总数) + "："+filename)
+            print("正在处理的文件" + str(正在处理的文件)+"/" + str(文件总数) + "："+ 当前目录路径 + filename)
             if filename=="copyed.txt":
                 continue
             if filename=="untime.txt":
