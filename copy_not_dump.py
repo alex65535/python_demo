@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # 复制源目录文件到目标目录
 import shutil
 import os
