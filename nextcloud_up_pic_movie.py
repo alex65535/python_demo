@@ -10,7 +10,7 @@ import time
 import get_media_create_time
 
 ##
-照片视频文件目录路径 = "E:\\未取得时间的文件_wana_iphone"
+照片视频文件目录路径 = "Z:\\[备份]吴娜的 iPhone\\"
 目标目录路径 = "e:\\a0"
 未获得时间的文件保存目录路径 = "e:\\a1"
 未获得媒体创建时间时使用文件创建时间 = True

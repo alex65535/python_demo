@@ -22,7 +22,10 @@ def 通过exif_read读取(file_path):
             创建日期字符串 = tags["Image DateTime"]
         else:
             return
-        # print(创建日期字符串)
+        
+        #print(创建日期字符串)
+        if str(创建日期字符串).strip() == "":
+            return
 
         a = list(str(创建日期字符串).replace(":", "").replace(" ", ""))
         文件路径 = file_path
@@ -41,13 +44,13 @@ def 通过exif_read读取(file_path):
         # fileFinalTime = "".join(a)  # 重新将列表转为字符串
 
         #print("The {0} is: {1}".format(myChar, fileFinalTime))
-        return 拍摄日期数据
-
         '''
         for tag in tags.keys():
             if tag not in ('JPEGThumbnail', 'TIFFThumbnail', 'Filename', 'EXIF MakerNote'):
                 print("Key: %s, value %s" % (tag, tags[tag]))
         '''
+        return 拍摄日期数据
+
     finally:
         f.close()
     return
@@ -148,4 +151,4 @@ def 获取图片视频的拍摄时间数据(文件路径, 未获得媒体时间�
 #print(通过exif_read读取("Z:\\家庭照片视频\\手机备份\\anna手机备份 2015-03-19\\DCIM\\Camera\\20130908_183713.jpG"))
 #print(获取图片视频的拍摄时间数据("Z:\\家庭照片视频\\手机备份\\anna手机备份 2015-03-19\\DCIM\\Camera\\20130822_212120.mp4", True))
 if __name__ == "__main__":
-    print(获取图片视频的拍摄时间数据("E:\\a\\a.JPG", False))
+    print(获取图片视频的拍摄时间数据("E:\\a0\\-- -- 4278.JPG", False))
