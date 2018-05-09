@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import shutil,os
 import sys
 import io
@@ -5,18 +7,18 @@ import re
 import random
 import datetime
 import time
-import hachoir #pip install hachoir3==3.0a2
-#from hachoir import core
-from hachoir import metadata
-from hachoir import parser
-#from hachoir import stream
-#from hachoir import subfile
+import get_media_create_time
 
+##
 照片视频文件目录路径 = 'Z:\\[备份]钱锋的 iPhone'
-#照片视频文件目录路径 = "e:\\a\\"
-#照片视频文件目录路径 = "C:\\Camera\\"
 目标目录路径 = "e:\\b\\"
 未获得时间的文件保存目录路径 = "e:\\b0\\"
+
+照片视频文件目录路径 = "Z:\\[备份]吴娜的 iPhone\\"
+目标目录路径 = "G:\\Photos\\"
+未获得时间的文件保存目录路径 = "E:\\未取得时间的文件_wana_iphone\\"
+未获得媒体创建时间时使用文件创建时间 = False
+##
 
 def 保证目录路径最后是斜杠(foldpath):
     if foldpath[-1] != "\\":
@@ -30,62 +32,6 @@ def 保证目录路径最后是斜杠(foldpath):
 已经复制的文件路径列表 = []
 已复制文件列表文件路径 = 照片视频文件目录路径 + "copyed.txt"
 记录未找出创建时间的文件路径 = 照片视频文件目录路径 + "untime.txt"
-
-def 获取图片视频的拍摄时间数据(文件路径):
-    parserFile = parser.createParser(文件路径)  # 解析文件
-    if not parserFile:
-        #print("Unable to parse file - {}\n".format(file))
-        return ""
-    try:
-        metadataDecode = metadata.extractMetadata(parserFile)  # 获取文件的metadata
-        # print(metadataDecode)
-    except ValueError:
-        #print('Metadata extraction error.')
-        metadataDecode = None
-        return ""
-
-    if not metadataDecode:
-        #print("Unable to extract metadata.")
-        return ""
-
-    myList = metadataDecode.exportPlaintext(
-        line_prefix="")  # 将文件的metadata转换为list,且将前缀设置为空
-
-    # print(myList)
-    视频MIMEType = "MIME type: video/"
-    创建日期tag = 'Creation date: '
-
-    是视频 = "".join(myList).find(视频MIMEType) > -1
-
-    拍摄日期数据 = {}
-    for i in range(1, len(myList)+1):
-        # 如果字符串在列表中,则提取数字部分,即为文件创建时间
-        if 创建日期tag in myList[i-1]:
-            创建时间字符串 = myList[i-1].replace(创建日期tag, "")
-            创建时间 = datetime.datetime.strptime(创建时间字符串, '%Y-%m-%d %H:%M:%S')
-            # print(创建时间)
-            if 是视频:
-                创建时间 = 创建时间 + datetime.timedelta(hours=8)
-            # print(创建时间.strftime("%Y%m%d%H%M%S"))
-            # fileTime = re.sub(r"\D", '', myList[i-1])  # 使用正则表达式将列表中的非数字元素剔除
-            a = list(创建时间.strftime("%Y%m%d%H%M%S"))  # 将文件创建时间字符串转为列表list
-            拍摄日期数据["四位年"] = "".join(a[0:4])
-            拍摄日期数据["二位年"] = "".join(a[2:4])
-            拍摄日期数据["月"] = "".join(a[4:6])
-            拍摄日期数据["日"] = "".join(a[6:8])
-            拍摄日期数据["时"] = "".join(a[8:10])
-            拍摄日期数据["分"] = "".join(a[10:12])
-            拍摄日期数据["秒"] = "".join(a[12:14])
-            拍摄日期数据["文件名"] = 拍摄日期数据["二位年"] + "-" + 拍摄日期数据["月"] + \
-                "-"+拍摄日期数据["日"] + " "+拍摄日期数据["时"]+"-"+拍摄日期数据["分"]+"-"+拍摄日期数据["秒"] +\
-                " " + str(os.path.getsize(文件路径))[-4:]+os.path.splitext(文件路径)[1]
-            # a.insert(timePosition, '_')  # 将列表插入下划线分割date与time
-            # fileFinalTime = "".join(a)  # 重新将列表转为字符串
-
-            #print("The {0} is: {1}".format(myChar, fileFinalTime))
-            return 拍摄日期数据
-    return ""
-
 
 def 移动文件(文件名和日期信息):
     当前文件目标目录路径 = 目标目录路径 + 文件名和日期信息["拍摄日期"]["四位年"] \
@@ -143,7 +89,7 @@ def 找出所有图片视频和拍摄信息():
             文件名和日期信息["文件名"] = 当前目录路径 + filename
             if 文件名和日期信息["文件名"] in 已经复制的文件路径列表 :
                 continue
-            文件名和日期信息["拍摄日期"] = 获取图片视频的拍摄时间数据(文件名和日期信息["文件名"])
+            文件名和日期信息["拍摄日期"] = 获取图片视频的拍摄时间数据(文件名和日期信息["文件名"], 未获得媒体创建时间时使用文件创建时间)
             if 文件名和日期信息["拍摄日期"] == "":
                 未解析出时间的文件数量 = 未解析出时间的文件数量 + 1
                 保存未解析出时间的文件(文件名和日期信息["文件名"])
