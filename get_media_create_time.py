@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+'''
+获取图片和视频的创建时间
+'''
+
 import exifread  # pip install ExifRead
 import datetime
 import time
@@ -18,8 +22,8 @@ def 通过exif_read读取(file_path):
         创建日期字符串 = ""  # 2015:09:15 10:57:33
         if "EXIF DateTimeOriginal" in tags.keys():
             创建日期字符串 = tags["EXIF DateTimeOriginal"]
-        elif "Image DateTime" in tags.keys():
-            创建日期字符串 = tags["Image DateTime"]
+        #elif "Image DateTime" in tags.keys(): #获取这个时间出现不正确
+        #    创建日期字符串 = tags["Image DateTime"]
         else:
             return
         
@@ -56,7 +60,10 @@ def 通过exif_read读取(file_path):
     return
 
 def 通过hachoir获取图片视频的拍摄时间数据(文件路径):
-    parserFile = parser.createParser(文件路径)  # 解析文件
+    try:
+        parserFile = parser.createParser(文件路径)  # 解析文件
+    except:
+        return
     if not parserFile:
         #print("Unable to parse file - {}\n".format(file))
         return
@@ -109,8 +116,9 @@ def 通过hachoir获取图片视频的拍摄时间数据(文件路径):
             #print("The {0} is: {1}".format(myChar, fileFinalTime))
             return 拍摄日期数据
 
-def 获取文件创建时间(file_path):
-    t = os.path.getctime(file_path)
+def 获取文件修改时间(file_path):
+    #t = os.path.getctime(file_path)
+    t = os.path.getmtime(file_path)
     timeStruct = time.localtime(t)
     print(time.strftime('%Y-%m-%d %H:%M:%S', timeStruct))
     a = list(time.strftime('%Y%m%d%H%M%S', timeStruct))
@@ -140,7 +148,7 @@ def 获取图片视频的拍摄时间数据(文件路径, 未获得媒体时间�
     if 拍摄日期数据 != None:
         return 拍摄日期数据
     if 未获得媒体时间时是否使用文件创建时间:
-        拍摄日期数据 = 获取文件创建时间(文件路径)
+        拍摄日期数据 = 获取文件修改时间(文件路径)
         if 拍摄日期数据 != None:
             return 拍摄日期数据
 
@@ -151,4 +159,4 @@ def 获取图片视频的拍摄时间数据(文件路径, 未获得媒体时间�
 #print(通过exif_read读取("Z:\\家庭照片视频\\手机备份\\anna手机备份 2015-03-19\\DCIM\\Camera\\20130908_183713.jpG"))
 #print(获取图片视频的拍摄时间数据("Z:\\家庭照片视频\\手机备份\\anna手机备份 2015-03-19\\DCIM\\Camera\\20130822_212120.mp4", True))
 if __name__ == "__main__":
-    print(获取图片视频的拍摄时间数据("E:\\a0\\-- -- 4278.JPG", False))
+    print(获取图片视频的拍摄时间数据("E:\\a\\2007\\00\\07-00-00 00-00-00 0082.jpg", False))

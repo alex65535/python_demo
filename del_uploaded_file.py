@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 '''
-将目标目录中所有文件（包括图片和视频）获取创建日期，然后复制到指定目录中，按年和月创建子目录
+删除目录中对应的已上传的文件
 '''
 
 import shutil,os
@@ -14,15 +14,13 @@ import time
 import get_media_create_time
 
 ##
-照片视频文件目录路径 = "Y:\\XiaoMi\\[备份]多多的 iPad"
-目标目录路径 = "G:\\Photos" #留空时不复制文件
-未获得时间的文件保存目录路径 = "E:\\未取得时间的文件 dd" #留空时不复制文件
-未获得媒体创建时间时使用文件修改时间 = False
+照片视频文件目录路径 = "Y:\\XiaoMi\\家庭照片视频\\专题"
+目标目录路径 = "G:\\Photos"
+未获得时间的文件保存目录路径 = "E:\\未取得时间的文件 家庭照片视频"
+未获得媒体创建时间时使用文件创建时间 = False
 ##
 
 def 保证目录路径最后是斜杠(foldpath):
-    if foldpath == "":
-        return ""
     if foldpath[-1] != "\\":
         foldpath = foldpath + "\\"
     return foldpath
@@ -33,63 +31,46 @@ def 保证目录路径最后是斜杠(foldpath):
 
 已经复制的文件路径列表 = []
 已复制文件列表文件路径 = 照片视频文件目录路径 + "copyed.txt"
-已复制目标文件列表文件路径 = 照片视频文件目录路径 + "target.txt"
 记录未找出创建时间的文件路径 = 照片视频文件目录路径 + "untime.txt"
 
 def 移动文件(文件名和日期信息):
-    if 目标目录路径 != "":
-        当前文件目标目录路径 = 目标目录路径 + 文件名和日期信息["拍摄日期"]["四位年"] \
-            + "\\" + 文件名和日期信息["拍摄日期"]["月"]+"\\"
-        #print(当前文件目标目录路径)
-        if os.path.exists(当前文件目标目录路径) != True:
-            os.makedirs(当前文件目标目录路径)
-        新文件路径 = 当前文件目标目录路径+文件名和日期信息["拍摄日期"]["文件名"]
-        if os.path.exists(新文件路径):
-            print("存在文件："+ 新文件路径)
-        else:
-            shutil.copy(文件名和日期信息["文件名"],当前文件目标目录路径+文件名和日期信息["拍摄日期"]["文件名"])
-        保存已复制的文件路径到记录文件(文件名和日期信息["文件名"],当前文件目标目录路径+文件名和日期信息["拍摄日期"]["文件名"])
+    当前文件目标目录路径 = 目标目录路径 + 文件名和日期信息["拍摄日期"]["四位年"] \
+        + "\\" + 文件名和日期信息["拍摄日期"]["月"]+"\\"
+    #print(当前文件目标目录路径)
+    if os.path.exists(当前文件目标目录路径) != True:
+        os.makedirs(当前文件目标目录路径)
+    新文件路径 = 当前文件目标目录路径+文件名和日期信息["拍摄日期"]["文件名"]
+    if os.path.exists(新文件路径):
+        print("存在文件："+ 新文件路径)
+        os.remove(新文件路径)
+    #shutil.copy(文件名和日期信息["文件名"],当前文件目标目录路径+文件名和日期信息["拍摄日期"]["文件名"])
+    保存已复制的文件路径到记录文件(文件名和日期信息["文件名"])
     return
 
-def 保存已复制的文件路径到记录文件(filepath, newfilepath):
+def 保存已复制的文件路径到记录文件(filepath):
+    return
     f = open(已复制文件列表文件路径,'a')
     try:
-        f.write(filepath + "\n")
+        f.write("\n"+ filepath)
     finally:
         f.close()
-    f = open(已复制目标文件列表文件路径,'a')
-    try:
-        f.write(newfilepath + "\n")
-    finally:
-        f.close()
-
 
 def 保存未解析出时间的文件(filepath):
+    return
     f = open(记录未找出创建时间的文件路径,'a')
     try:
-        f.write(filepath + "\n")
+        f.write("\n"+ filepath)
     finally:
         f.close()
 
 def 复制未取得创建时间的文件到指定目录(filepath):
-    if 未获得时间的文件保存目录路径 != "":
-        #取得原文件的相对目录
-        原文件目录路径 = os.path.split(filepath)[0]
-        原文件目录路径 = 保证目录路径最后是斜杠(原文件目录路径)
-        原文件的相对目录 = 原文件目录路径.replace(照片视频文件目录路径,"")
-        目标文件目录路径 = 未获得时间的文件保存目录路径 + 原文件的相对目录
-        if os.path.exists(目标文件目录路径) != True:
-            os.makedirs(目标文件目录路径)
-        目标文件路径 = 目标文件目录路径 + os.path.split(filepath)[1]
-        '''
-        #如果存在重复文件，加随机名称
-        if os.path.exists(目标文件路径):
-            a = os.path.splitext(os.path.split(filepath)[1])
-            目标文件路径 = 目标文件目录路径 + a[0] + "__" + str(random.randint(100,999)) + a[1]
-        '''
-        if not os.path.exists(目标文件路径):
-            shutil.copy(filepath, 目标文件路径)
-        #print(filepath, 目标文件路径)
+    return
+    目标文件路径 = 未获得时间的文件保存目录路径+os.path.split(filepath)[1]
+    if os.path.exists(目标文件路径):
+        a = os.path.splitext(os.path.split(filepath)[1])
+        目标文件路径 = 未获得时间的文件保存目录路径+ a[0] + "__" + str(random.randint(100,999)) + a[1]
+    shutil.copy(filepath, 目标文件路径)
+    #print(filepath, 目标文件路径)
 
 def 找出所有图片视频和拍摄信息():
     文件总数 = 0
@@ -111,13 +92,11 @@ def 找出所有图片视频和拍摄信息():
                 continue
             if filename=="untime.txt":
                 continue
-            if filename == "target.txt":
-                continue
             文件名和日期信息 = {"文件名": "", "拍摄日期": ""}
             文件名和日期信息["文件名"] = 当前目录路径 + filename
             if 文件名和日期信息["文件名"] in 已经复制的文件路径列表 :
                 continue
-            文件名和日期信息["拍摄日期"] = get_media_create_time.获取图片视频的拍摄时间数据(文件名和日期信息["文件名"], 未获得媒体创建时间时使用文件修改时间)
+            文件名和日期信息["拍摄日期"] = get_media_create_time.获取图片视频的拍摄时间数据(文件名和日期信息["文件名"], 未获得媒体创建时间时使用文件创建时间)
             if 文件名和日期信息["拍摄日期"] == None:
                 未解析出时间的文件数量 = 未解析出时间的文件数量 + 1
                 保存未解析出时间的文件(文件名和日期信息["文件名"])
@@ -127,6 +106,7 @@ def 找出所有图片视频和拍摄信息():
     print("未解析出时间的文件数量: " + str(未解析出时间的文件数量))
 
 def 读取所有已复制的文件():
+    return
     if os.path.exists(已复制文件列表文件路径):
         file_object = open(已复制文件列表文件路径) #不要把open放在try中，以防止打开失败，那么就不用关闭了
         try:
@@ -137,10 +117,5 @@ def 读取所有已复制的文件():
         finally:
             file_object.close()
 
-def 清空untime文件():
-    if os.path.exists(记录未找出创建时间的文件路径):
-        os.remove(记录未找出创建时间的文件路径)
-
 读取所有已复制的文件()
-清空untime文件()
 找出所有图片视频和拍摄信息()
